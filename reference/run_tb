@@ -1,0 +1,44 @@
+#!/usr/bin/csh
+
+#license setting
+setenv SFLM_SERVER innersanctum
+setenv CDS_LIC_FILE 5280@innersanctum:/apps/cadence/license-current
+setenv CDSLMD_LICENSE_FILE 5280@innersanctum:/apps/cadence/license-current
+setenv LM_LICENSE_FILE 27000@innersanctum.engr.sjsu.edu:/apps/synopsys/license/current-license-key:27001@innersanctum.engr.sjsu.edu
+setenv SNPSLMS_LICENSE_FILE 27000@innersanctum.engr.sjsu.edu:/apps/synopsys/license/current-license-key
+
+# VCS Setting
+#this is prefer
+setenv VCS_HOME /apps/synopsys/I-2014.03-2
+source $VCS_HOME/bin/environ.csh
+
+echo VCS_HOME:
+echo $VCS_HOME
+
+#UVM Setting can be changed
+setenv UVM_HOME ~/uvm/lib/uvm-1.1d
+setenv VCS_UVM_HOME $UVM_HOME
+
+echo UVM_HOME:
+echo $UVM_HOME
+#uvm home may vars
+
+#Custom Setting can be changed
+setenv WORK_HOME ~/uvm/shizhan 
+setenv DUT_HOME $WORK_HOME/ch2/dut/dut.sv
+
+echo WORK_HOME:
+echo $WORK_HOME
+
+echo DUT_HOME:
+echo $DUT_HOME
+
+#VCS RUN can add more commands
+
+vcs -sverilog -timescale=1ns/1ns +define+UVM_OBJECT_MUST_HAVE_CONSTRUCTOR +define+UVM_NO_DEPRECATED +acc +vpi +incdir+$UVM_HOME/src $UVM_HOME/src/uvm.sv $UVM_HOME/src/dpi/uvm_dpi.cc $DUT_HOME -CFLAGS -DVCS $argv 
+# dut.sv & tb.sv 
+
+#Sim Run
+if ($status != 0) exit $status
+./simv 
+exit 0

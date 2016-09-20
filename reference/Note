@@ -1,0 +1,11 @@
+Top_tb: instatiate the interfaces
+		Configure the interface with set options
+		
+case: set default sequence
+
+Base test: instantiate envs virtual sqr
+			report phase
+			set report ID to sent report to files
+			
+			
+First give a solution even it is not so perfect, then give a better solution. Try to do first and the optimize it.
