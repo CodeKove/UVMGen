@@ -48,10 +48,10 @@ public class SqrGen {
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
 			this.addSpace(fw, 2);
 			fw.write("class " + name + " extends uvm_sequencer#(" + TransactionType + ");\n");
+			fw.write("\t`uvm_component_utils(" + name + ")\n");
 			this.addSpace(fw, 1);
 			this.addNewFun(fw);
 			this.addSpace(fw, 1);
-			fw.write("\t`uvm_component_utils(" + name + ")\n");
 			fw.write("\nendclass");
 			this.addSpace(fw);
 			fw.write("\n`endif\n");

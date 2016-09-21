@@ -24,6 +24,10 @@ import java.io.IOException;
 public class AgentGen {
 	
 	private String name, fileName;
+	private String drvType, drvName;
+	private String monType, monName;
+	private String sqrType, sqrName;
+	
 	
 	public AgentGen() {
 		this.name = name;

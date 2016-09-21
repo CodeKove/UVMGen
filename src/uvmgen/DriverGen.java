@@ -40,6 +40,13 @@ import java.util.*;
  */
 public class DriverGen {
 	//Name, Filename and Transaction type for the Driver
+	/**
+	 * name is the instance name of the component
+	 * fileName is file name to store the code
+	 * transactionType is the transaction type 
+	 * interfaceType and interfaceName are type and name for the interface 
+	 * 
+	 */
 	private String name;
 	private String fileName;
 	private String transactionType;
@@ -70,12 +77,13 @@ public class DriverGen {
 			File f= new File(fileName + ".sv");
 			FileWriter fw = new FileWriter(f);
 			
-			//Scanner for inputs from the user
-			Scanner scan = new Scanner(System.in);
+			
 			System.out.println("Please enter the transaction type for driver: ");
 			this.setTransactionType(scan.next());
+			
 			System.out.println("Please enter the interface type for driver: ");
 			this.interfaceType = scan.next();
+			
 			System.out.println("Please enter the interface name for driver: ");
 			this.interfaceName = scan.next();
 			scan.close();
@@ -87,14 +95,17 @@ public class DriverGen {
 			
 			fw.write("class " + name + " extends uvm_driver#(" + transactionType + ");\n");
 			//here to add driver body\
-			addSpace(fw);
-			
-			this.addInterface(interfaceType, interfaceName, fw);
-			
-			addSpace(fw, 2);
 			fw.write("`uvm_component_utils(" + name + ")\n");
-			addSpace(fw, 3);
-			this.addNewFun(name, "null", fw);
+			addSpace(fw);
+			this.addInterface(interfaceType, interfaceName, fw);
+			addSpace(fw, 2);
+			fw.write("`uvm_object_utils_begin(" + name + ")\n");
+			addSpace(fw);
+			fw.write("`uvm_object_utils_end\n");
+			
+			addSpace(fw);
+			fw.write("//Change parent if needed !!!\n");
+			this.addNewFunc(name, "null", fw);
 			addSpace(fw, 3);
 			this.addBuildPhase(fw);
 			addSpace(fw, 3);
@@ -119,7 +130,7 @@ public class DriverGen {
 		
 		
 	//adding new function in the code
-	private void addNewFun(String name, String parent, FileWriter fw){
+	private void addNewFunc(String name, String parent, FileWriter fw){
 		try {
 			fw.write("function new (string name = \"" + name + "\" , uvm_component parent = " + parent + ");\n");
 			fw.write("\tsuper.new(name, parent);\n");
@@ -150,6 +161,12 @@ public class DriverGen {
 			//several cases for loop needed
 			fw.write("\tif(!uvm_config_db#(virtual " + interfaceType + ")::get(this, \"\"," + "\"" + interfaceName + "\"," + interfaceName + "))\n");
 			fw.write("\t\t`uvm_fatal(\"" + name + "\", " + "\"virtual interface must be set for " + name + "!!!)\"\n" );
+			///
+			fw.write("//Write your config code here\n");
+			fw.write("\t if(!uvm_config_db#()::get(this, \"\", \"\", ))\n");
+			fw.write("\t\t`uvm_fatal(\"\", " + "\"\")\n" );
+			
+			
 			fw.write("endfunction\n");
 			
 		} catch (IOException e) {
@@ -160,7 +177,7 @@ public class DriverGen {
 	//adding run phase
 	private void addRunPhase(FileWriter fw){
 		try {
-			fw.write("virtual task run_phase (uvm_phase phase)\n");
+			fw.write("virtual task run_phase (uvm_phase phase);\n");
 			addSpace(fw, 1);
 			fw.write("//ADD RESET LOGIC HERE\n");
 			addSpace(fw, 1);

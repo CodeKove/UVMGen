@@ -62,7 +62,6 @@ public class ScbGen {
 		}
 	}
 	
-	BigInteger big = new BigInteger();
 	private void addRunPhase(FileWriter fw){
 		try{
 			fw.write("virtual task void run_phase(uvm_phase phase);\n");

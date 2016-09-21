@@ -9,3 +9,18 @@ Base test: instantiate envs virtual sqr
 			
 			
 First give a solution even it is not so perfect, then give a better solution. Try to do first and the optimize it.
+
+
+ class my_cfg extends uvm_object;
+      `uvm_object_utils (my_cfg)
+
+      virtual dut_if             vif;                          // Handle to interface
+      uvm_active_passive_enum    active = UVM_ACTIVE;          // Configure Agent to be active
+
+      uvm_verbosity m_verbosity = UVM_LOW;
+      // Put in other agent parameters if required - functional coverage, 
+
+      function new (string name = "my_cfg");
+         super.new (name);
+      endfunction
+   endclass

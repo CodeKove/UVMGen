@@ -41,6 +41,7 @@ public class SqGen {
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
 			
 			fw.write("class " + name + " extends uvm_sequence#(" + transType + ");\n");
+			fw.write("`uvm_object_utils(" + name + ")\n");
 			addSpace(fw, 1);
 			fw.write(transType + " " + transName + "\n");
 			addSpace(fw, 1);
@@ -48,9 +49,6 @@ public class SqGen {
 			addSpace(fw, 1);
 			this.addBody(transName, fw);
 			addSpace(fw, 1);
-			fw.write("`uvm_object_utils(" + name + ")\n");
-			
-			
 			fw.write("endclass");
 			fw.write("\n`endif\n");
 			fw.close();

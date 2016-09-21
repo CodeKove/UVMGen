@@ -15,6 +15,11 @@ public class UVMGen {
 		
 		Scanner scan = new Scanner(System.in);
 		
+		
+		DriverGen Driver = new DriverGen("my_drv", "driver");
+		Driver.writeDriver();
+		System.out.println("Your driver is generated");
+		
 		/*
 		System.out.print("Please enter the FileName:");
 		String fileName = new String();
@@ -42,13 +47,12 @@ public class UVMGen {
 		//TransGen Trans = new TransGen("trans", "Trans");
 		//Trans.writeTrans();
 		//System.out.println("Your transaction is generated");
-		*/
+		
 		
 		SqGen sq = new SqGen("case0_sequence", "case0");
 		sq.writeSq();
 		System.out.println("Your sequence is generated");
-		
-		
+		*/
 		
 	}
 }
