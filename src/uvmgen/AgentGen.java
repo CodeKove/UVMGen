@@ -1,8 +1,7 @@
 package uvmgen;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
 
 /**
  * 
@@ -27,9 +26,12 @@ public class AgentGen {
 	private String drvType, drvName;
 	private String monType, monName;
 	private String sqrType, sqrName;
+	private String transactionType;
+	private String portType, portName;
 	
+	Scanner scan = new Scanner(System.in);
 	
-	public AgentGen() {
+	public AgentGen(String name, String fileName) {
 		this.name = name;
 		this.fileName = fileName;
 	}
@@ -38,6 +40,28 @@ public class AgentGen {
 	public void writeAgent(){
 		
 		try {
+			
+			System.out.println("Please enter the driver Type:");
+			drvType = scan.next();
+			System.out.println("Please enter the driver Name:");
+			drvName = scan.next();
+			System.out.println("Please enter the monitor Type:");
+			monType = scan.next();
+			System.out.println("Please enter the monitor Name:");
+			monName = scan.next();
+			System.out.println("Please enter the Sequencer Type:");
+			sqrType = scan.next();
+			System.out.println("Please enter the Sequencer Name:");
+			sqrName = scan.next();
+			System.out.println("Please enter the Transaction Type:");
+			transactionType = scan.next();
+			
+			System.out.println("Please enter the Port Type:");
+			portType = scan.next();
+			System.out.println("Please enter the Port Name:");
+			portName = scan.next();
+			
+			
 			File f= new File(fileName + ".sv");
 			FileWriter fw = new FileWriter(f);
 			
@@ -46,23 +70,25 @@ public class AgentGen {
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
 			
 			fw.write("class " + name + " extends uvm_agent#;\n");
-			//here to add driver body\
+			fw.write("`uvm_component_utils(" + name + ")\n");
+			
 			addSpace(fw, 1);
 			
 			//declare components
+			fw.write(drvType + drvName + ";\n");
+			fw.write(monType + monName + ";\n");
+			fw.write(sqrType + sqrName + ";\n");
 			
 			//declare ports
+			fw.write(portType + "#(" + transactionType + ") " + portName + ";\n");
 			
 			//new function
-			
+			addNewFunc(fw);
 			//build
-			
+			this.addBuildPhase(fw);
 			//connect
-			
-			
-			fw.write("`uvm_component_utils(" + name + ")\n");
-			
-			
+			this.addConnectPhase(fw);
+	
 			fw.write("\nendclass");
 			fw.write("\n`endif\n");
 			fw.close();
@@ -83,8 +109,11 @@ public class AgentGen {
 			fw.write("\tsuper.build_phase(phase)\n");
 			fw.write("\tif (is_active == UVM_ACTIVE) begin\n");
 			//add active code
+			fw.write("\t" + this.drvName + " = " + this.drvType + "::type_id::create(\"" + this.drvName + "\", this);\n");
+			fw.write("\t" + this.sqrName + " = " + this.sqrType + "::type_id::create(\"" + this.sqrName + "\", this);\n");
 			fw.write("\tend\n");
 			//add passive code
+			fw.write(this.monName + " = " + this.monType + "::type_id::create(\"" + this.monName + "\", this);\n");
 			
 			
 			fw.write("endfunction\n");
@@ -101,9 +130,11 @@ public class AgentGen {
 			
 			fw.write("\tif (is_active == UVM_ACTIVE) begin\n");
 			//add active code
+			fw.write(drvName + ".seq_item_port.connect(" + sqrName + ".seq_item_export);\n");
 			fw.write("\tend\n");
 			//add passive code
-			
+			//need to build links
+			fw.write(portName + " = " + monName + "." + portName);
 			fw.write("endfunction\n");
 		} catch (IOException e){
 			e.printStackTrace();
@@ -113,7 +144,7 @@ public class AgentGen {
 	
 	
 	//adding new function in the code
-	private void addNewFun(FileWriter fw){
+	private void addNewFunc(FileWriter fw){
 		try {
 			fw.write("function new (string name  , uvm_component parent);\n");
 			fw.write("\tsuper.new(name, parent);\n");

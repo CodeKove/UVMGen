@@ -59,7 +59,7 @@ public class MonitorGen {
 			
 			this.addInterface(interfaceType, interfaceName, fw);
 			this.addAnalysisPort(interfaceType, interfaceName, fw);
-
+			this.addCoverage(fw);
 			addSpace(fw, 2);
 			this.addNewFun(name, "null", fw);
 			addSpace(fw, 2);
@@ -168,6 +168,17 @@ public class MonitorGen {
 			fw.write("endtask");
 		} catch (IOException e) {
 			System.out.println("Failed to create drive task");
+		}
+	}
+	
+	
+	private void addCoverage(FileWriter fw) {
+		try {
+			fw.write("covergroup;");
+			fw.write("\tcovergroup;");
+			fw.write("endgroup;");
+		} catch (IOException e){
+			System.out.println("Failed to create coverage");
 		}
 	}
 	

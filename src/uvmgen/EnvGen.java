@@ -2,9 +2,9 @@
 
 package uvmgen;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.*;;
+
 
 /**
  * 
@@ -19,10 +19,23 @@ import java.io.IOException;
  * 7. connect phase
  * 
  */
+
+//It is ok to create a class to contain these infos
 public class EnvGen {
 	private String name, fileName;
 	
-	public EnvGen() {
+	private List<String> compTypeList = new ArrayList<>();
+	private List<String> compNameList = new ArrayList<>();
+	private List<String> compPortList = new ArrayList<>();
+	
+	private List<String> fifoTypeList = new ArrayList<>();
+	private List<String> fifoTransTypeList = new ArrayList<>();
+	private List<String> fifoNameList = new ArrayList<>();
+	
+	//Scanner for input from the user
+	Scanner scan = new Scanner(System.in);
+	
+	public EnvGen(String name, String fileName) {
 		this.name = name;
 		this.fileName = fileName;
 	}
@@ -50,10 +63,20 @@ public class EnvGen {
 		}
 	}
 	
+	/**
+	 * create agent  model scb fifos
+	 * active or not
+	 * @param fw
+	 */
 	private void addBuildPhase(FileWriter fw){
 		
+		
+		
 	}
-	
+	/**
+	 * connect port to port
+	 * @param fw
+	 */
 	private void addConnectPhase(FileWriter fw){
 		
 	}
