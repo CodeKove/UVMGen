@@ -54,10 +54,9 @@ public class DriverGen {
 	
 	
 	
-	
 	//Scanner for input from the user
 	
-	Scanner scan = new Scanner(System.in);
+	Scanner drvScan = new Scanner(System.in);
 	
 	//constructor
 	
@@ -79,14 +78,14 @@ public class DriverGen {
 			
 			
 			System.out.println("Please enter the transaction type for driver: ");
-			this.setTransactionType(scan.next());
+			this.setTransactionType(drvScan.next());
 			
 			System.out.println("Please enter the interface type for driver: ");
-			this.interfaceType = scan.next();
+			this.interfaceType = drvScan.next();
 			
 			System.out.println("Please enter the interface name for driver: ");
-			this.interfaceName = scan.next();
-			scan.close();
+			this.interfaceName = drvScan.next();
+			//drvScan.close();
 			
 			
 			//fw.write();
@@ -94,14 +93,14 @@ public class DriverGen {
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
 			
 			fw.write("class " + name + " extends uvm_driver#(" + transactionType + ");\n");
-			//here to add driver body\
+			//here to add driver body
 			fw.write("`uvm_component_utils(" + name + ")\n");
 			addSpace(fw);
 			this.addInterface(interfaceType, interfaceName, fw);
 			addSpace(fw, 2);
-			fw.write("`uvm_object_utils_begin(" + name + ")\n");
+			fw.write("`uvm_component_utils_begin(" + name + ")\n");
 			addSpace(fw);
-			fw.write("`uvm_object_utils_end\n");
+			fw.write("`uvm_component_utils_end\n");
 			
 			addSpace(fw);
 			fw.write("//Change parent if needed !!!\n");
@@ -124,9 +123,9 @@ public class DriverGen {
 	}
 	
 	//set Transaction Type for the driver
-		private void setTransactionType(String transactionType) {
-			this.transactionType = transactionType;
-		}
+	private void setTransactionType(String transactionType) {
+		this.transactionType = transactionType;
+	}
 		
 		
 	//adding new function in the code
@@ -181,12 +180,14 @@ public class DriverGen {
 			addSpace(fw, 1);
 			fw.write("//ADD RESET LOGIC HERE\n");
 			addSpace(fw, 1);
+			fw.write("fork\n");
 			fw.write("\twhile(1) begin\n");
 			fw.write("\t\tseq_item_port.get_next_item(req);\n");
 			fw.write("\t\tdrive_my_pkt(req);\n");
 			fw.write("\t\t//ADD Your OWN CODE Here\n");
 			fw.write("\t\tseq_item_port.item_done();\n");
-			fw.write("end\n");
+			fw.write("\tend\n");
+			fw.write("join\n");
 			fw.write("endtask");
 			
 		} catch (IOException e) {
@@ -203,7 +204,7 @@ public class DriverGen {
 			fw.write("virtual task drive_my_pkt(" + transactionType + "tr" + ")\n");
 			fw.write("`uvm_info(\"" + name + "\", " + "\"Begin to drive\", " + "UVM_LOW);\n");
 			fw.write("//ADD YOUR OWN MAGIC DRIVE POWER HERE\n");
-			addSpace(fw, 3);
+			addSpace(fw, 1);
 			fw.write("`uvm_info(\"" + name + "\", " + "\"End to drive\", " + "UVM_LOW)\n");
 			fw.write("endtask");
 		} catch (IOException e) {

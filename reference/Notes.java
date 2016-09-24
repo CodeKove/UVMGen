@@ -20,3 +20,13 @@ static function bit get (  uvm_component cntxt,
 inout   T             value);
 
 uvm_top.print_topology (); 
+
+while (true){
+	System.out.println();
+	String a = scan.next();
+	if (a.equals("")){
+		break;
+	} eles {
+		//do something
+	}
+}

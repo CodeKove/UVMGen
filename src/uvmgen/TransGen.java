@@ -34,6 +34,7 @@ import java.io.*;
  */
 public class TransGen {
 	private String name, fileName;
+	
 	private List<String> randVarsName = new ArrayList<String>();
 	private List<String> randVarsType = new ArrayList<String>();
 	
@@ -155,9 +156,7 @@ public class TransGen {
 			
 			//add field automation
 			fw.write("`uvm_object_utils_begin(" + name + ")\n");
-			
-			this.addFieldAuto(nonRandVarsName, nonRandVarsType, randVarsName, randVarsType, fw);
-			
+			fw.write("\t//`uvm_field_" + "int(" + "name, " + "UVM_ALL_ON)\n");
 			fw.write("`uvm_object_utils_end\n");
 			
 
@@ -172,9 +171,6 @@ public class TransGen {
 		}
 	}
 	
-	//private void addVars(List<String> randvars, List<String> nonRandVars, FileWriter fw){
-		
-	//}
 	
 	/**
 	 * 
@@ -200,11 +196,6 @@ public class TransGen {
 				System.out.println("Failed to create NonRand variable field");
 			}
 		}
-		try {
-			fw.write("\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	/**
@@ -216,6 +207,8 @@ public class TransGen {
 	 */
 	
 	private void addRandVars(List<String> randVarsName, List<String> randVarsType, FileWriter fw){
+		//first create a string with size() of the list
+		//second use toArray() to copy the List
 		String[] varNames =  new String[randVarsName.size()];
 		varNames = randVarsName.toArray(varNames);
 		
@@ -230,11 +223,6 @@ public class TransGen {
 			} catch(IOException e) {
 				System.out.println("Failed to create Rand variable field");
 			}
-		}
-		try {
-			fw.write("\n");
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	/**
@@ -258,11 +246,6 @@ public class TransGen {
 			} catch(IOException e) {
 				System.out.println("Failed to create Rand variable field");
 			}
-		}
-		try {
-			fw.write("\n");
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -290,11 +273,6 @@ public class TransGen {
 				System.out.println("Failed to create Rand variable field");
 			}
 		}
-		try {
-			fw.write("\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	/**
@@ -303,6 +281,7 @@ public class TransGen {
 	 * @param fw
 	 * This is function is used to create field automation for the transaction in the factory
 	 */
+	/*
 	private void addFieldAuto(List<String> nonRandVarsName, List<String> nonRandVarsType, List<String> randVarsName, List<String> randVarsType, FileWriter fw){
 		//record none Rand variables
 		String[] nonRandNameArray =  new String[nonRandVarsName.size()];
@@ -322,13 +301,13 @@ public class TransGen {
 			}
 		}
 		try {
-			fw.write("\t`uvm_field_" + "int(" + "name, " + "UVM_ALL_ON)\n");
+			fw.write("\t//`uvm_field_" + "int(" + "name, " + "UVM_ALL_ON)\n");
 		} catch (IOException e) {
 			System.out.println("Field Automation failed");
 		}
 		
 	}
-		
+	*/	
 	
 	//adding new function in the code
 	private void addNewFun(String name, FileWriter fw){

@@ -41,7 +41,7 @@ public class SqrGen {
 			System.out.println("Please enter the transaction type for sequencer: ");
 			
 			this.setTransactionType(scan.next());
-			scan.close();
+			//scan.close();
 			
 			//fw.write();
 			fw.write("`ifndef " + name.toUpperCase() + "__SV\n" );

@@ -27,7 +27,7 @@ public class SqGen {
 		this.transType = scan.next();
 		System.out.print("Please enter the transaction name for the sequence:");
 		this.transName = scan.next();
-		scan.close();
+		//scan.close();
 	}
 	
 	public void writeSq() {

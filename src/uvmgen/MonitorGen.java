@@ -1,4 +1,4 @@
-                                                          package uvmgen;
+package uvmgen;
 
 import java.io.*;
 import java.util.*;
@@ -21,8 +21,10 @@ import java.util.*;
 
 public class MonitorGen {
 	private String name, fileName;
+	
 	private String transactionType;
 	private String portName;
+	
 	private String interfaceType, interfaceName;
 	
 	//Scanner for input from the user
@@ -41,7 +43,9 @@ public class MonitorGen {
 			File f= new File(fileName + ".sv");
 			FileWriter fw = new FileWriter(f);
 			
-			//Scanner for inputs from the user
+			/**
+			 * get information needed for the monitor
+			 */
 			
 			System.out.println("Please enter the transaction type for monitor: ");
 			this.setTransactionType(scan.next());
@@ -57,11 +61,14 @@ public class MonitorGen {
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
 			fw.write("class " + name + " extends uvm_monitor;\n");
 			
+			fw.write("`uvm_component_utils(" + name + ")\n");
+			
 			this.addInterface(interfaceType, interfaceName, fw);
+			
 			this.addAnalysisPort(interfaceType, interfaceName, fw);
 			this.addCoverage(fw);
 			addSpace(fw, 2);
-			this.addNewFun(name, "null", fw);
+			this.addNewFunc(name, "null", fw);
 			addSpace(fw, 2);
 			this.addBuildPhase(fw);
 			addSpace(fw, 2);
@@ -84,7 +91,7 @@ public class MonitorGen {
 	
 	
 	//adding new function in the code
-	private void addNewFun(String name, String parent, FileWriter fw){
+	private void addNewFunc(String name, String parent, FileWriter fw){
 		try {
 			fw.write("function new (string name = \"" + name + "\" , uvm_component parent = " + parent + ");\n");
 			fw.write("\tsuper.new(name, parent);\n");
@@ -141,12 +148,14 @@ public class MonitorGen {
 			fw.write("//ADD Your OWN CODE Here\n");
 			fw.write(this.transactionType + " tr;\n");
 			addSpace(fw, 1);
+			fw.write("fork");
 			fw.write("while(1) begin\n");
 			fw.write("\ttr = new(\"tr\");\n");
 			fw.write("\tcollect_my_pkt(tr);\n");
 			//need to implement collect_my_pkt and drive_my_pkt
-			fw.write("\tap.write(tr);\n");
+			fw.write("\t"+ portName+ ".write(tr);\n");
 			fw.write("end\n");
+			fw.write("join");
 			this.addSpace(fw, 1);
 			fw.write("endtask\n");
 			

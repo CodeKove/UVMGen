@@ -17,10 +17,16 @@ import java.io.IOException;
  *5. some variables
  *
  */
+
+/**
+ * 
+ * @author CodeMan
+ * This code is used to generate a file of interface
+ */
 public class InterfaceGen {
 	private String name, fileName;
 	
-	public InterfaceGen() {
+	public InterfaceGen(String name, String fileName) {
 		this.name = name;
 		this.fileName = fileName;
 	}
@@ -34,6 +40,46 @@ public class InterfaceGen {
 			
 			e.printStackTrace();
 			System.out.println("Failed to create ");
+		}
+	}
+	
+	private void addVars(FileWriter fw) {
+		try {
+			fw.write("dog");
+		} catch (IOException e) {
+			System.out.println("Failed to create variables in interface");
+		}
+	}
+	
+	private void addfuncs(FileWriter fw) {
+		try {
+			fw.write("dog");
+		} catch (IOException e) {
+			System.out.println("Failed to create Functions in interface");
+		}
+	}
+	
+	private void addTasks(FileWriter fw) {
+		try {
+			fw.write("dog");
+		} catch (IOException e) {
+			System.out.println("Failed to create Tasks in interface");
+		}
+	}
+	
+	private void addModPorts(FileWriter fw) {
+		try {
+			fw.write("dog");
+		} catch (IOException e) {
+			
+		}
+	}
+	
+	private void addClkBLKs(FileWriter fw) {
+		try {
+			fw.write("dog");
+		} catch (IOException e) {
+			
 		}
 	}
 	

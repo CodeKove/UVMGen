@@ -1,5 +1,3 @@
-
-
 package uvmgen;
 
 import java.io.*;
