@@ -27,9 +27,6 @@ public class SqrGen {
 		this.filename = filename;
 	}
 	
-	
-	
-	
 	//write the sequencer to the file
 	public void writeSequencer(){
 		try {
