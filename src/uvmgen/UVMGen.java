@@ -93,20 +93,27 @@ public class UVMGen {
 		*/
 		
 		//System.out.println("done");
-		/*
+		
 		MonitorGen Monitor = new MonitorGen("my_monitor", "monitor");
 		Monitor.writeMonitor();
 		System.out.println("Your Monitor is generated");
-		*/
+		
 		/*
 		ModelGen Model = new ModelGen("my_model", "model");
 		Model.writeScb();
 		System.out.println("Your Model is generated");
 		*/
-		
+		/*
 		ScbGen Scb = new ScbGen("my_scb", "scb");
 		Scb.writeScb();
 		System.out.println("Your ScoreBoard is generated");
+		*/
+		/*
+		InterfaceGen If = new InterfaceGen("my_if", "if");
+		If.writeInterface();
+		System.out.println("Your Interface is generated");
+		*/
+		//System.out.println("Your ScoreBoard is generated");
 		/*
 		TransGen Trans = new TransGen("my_trans", "Trans");
 		Trans.writeTrans();

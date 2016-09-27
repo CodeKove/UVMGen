@@ -23,11 +23,9 @@ public class MonitorGen {
 	private String name, fileName;
 	
 	private String transactionType;
-	private String portName;
-	private String portType;
-	
-	private List<String> portNameList = new ArrayList<String>();
-	private List<String> portTypeList = new ArrayList<String>();
+	//assume that monitor only has analysis ports
+	private List<String> anaPortNameList = new ArrayList<String>();
+	//private List<String> portTypeList = new ArrayList<String>();
 	
 	
 	private String interfaceType, interfaceName;
@@ -54,39 +52,40 @@ public class MonitorGen {
 			
 			System.out.println("Please enter the transaction type for monitor: ");
 			this.setTransactionType(scan.next());
+			
 			System.out.println("Please enter the interface type for monitor: ");
 			this.interfaceType = scan.next();
 			System.out.println("Please enter the interface name for monitor: ");
 			this.interfaceName = scan.next();
-			//for ports
-			System.out.println("Please enter the port name for monitor: ");
-			this.portName = scan.next();
-			this.portNameList.add(portName);
-			
-			System.out.println("Please enter the port name for monitor: ");
-			this.portType = scan.next();
-			this.portTypeList.add(portName);
-			
+		
 			
 			fw.write("`ifndef " + name.toUpperCase() + "__SV\n" );
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
 			fw.write("class " + name + " extends uvm_monitor;\n");
-			
+			addSpace(fw, 1);
 			fw.write("`uvm_component_utils(" + name + ")\n");
-			
+		
 			this.addInterface(interfaceType, interfaceName, fw);
 			
-			this.addPort(interfaceType, interfaceName, fw);
+			setPort(anaPortNameList);
+			this.addPort(anaPortNameList, fw);
+			addSpace(fw, 1);
+			
 			this.addCoverage(fw);
 			addSpace(fw, 2);
+			
 			this.addNewFunc(name, "null", fw);
 			addSpace(fw, 2);
+			
 			this.addBuildPhase(fw);
 			addSpace(fw, 2);
+			
 			this.addRunPhase(fw);
 			addSpace(fw, 3);
+			
 			this.addCollectTask(fw);
 			addSpace(fw, 1);
+			
 			fw.write("\nendclass");
 			fw.write("\n`endif\n");
 			fw.close();	
@@ -123,10 +122,21 @@ public class MonitorGen {
 		}
 	}
 	//write ports
+	
+	private void setPort( List<String> anaPortNameList) {
+		System.out.println("Please enter the TOTAL port number for this monitor (NUMBER ONLY!!!):");
+		int n = scan.nextInt();
+		for (int i = 0; i < n; i++) {
+			System.out.println("Please enter the next port name for monitor: ");
+			anaPortNameList.add(scan.next());	
+		}
+	}
 	//adding analysis port
-	private void addPort(String interfaceType, String interfaceName, FileWriter fw) {
+	private void addPort(List<String> anaPortNameList, FileWriter fw) {
 		try {
-			fw.write("\tuvm_analysis_port #(" + this.transactionType + ")" + portName + ";\n" );
+			for(int i = 0; i < anaPortNameList.size(); i++) {
+				fw.write("\tuvm_analysis_port #(" + this.transactionType + ") " + anaPortNameList.get(i) + ";\n" );
+			}
 		} catch (IOException e) {
 			System.out.println("Failed to create interface");
 		}
@@ -143,14 +153,15 @@ public class MonitorGen {
 			fw.write("\tif(!uvm_config_db#(virtual " + interfaceType + ")::get(this, \"\"," + "\"" + interfaceName + "\"," + interfaceName + "))\n");
 			fw.write("\t\t`uvm_fatal(\"" + name + "\", " + "\"virtual interface must be set for " + name + "!!!)\"\n" );
 			
-			fw.write("\t" +portName + " = new(\"" + portName + "\" , this)\n" );
-			
+			for (int i = 0; i < this.anaPortNameList.size(); i++) {
+				fw.write("\t" + this.anaPortNameList.get(i) + " = new(\"" + this.anaPortNameList.get(i) + "\" , this)\n" );
+			}
 			fw.write("endfunction\n");
 		} catch (IOException e) {
 			System.out.println("Failed to create build phase");
-		}
-		
+		}	
 	}
+	
 	//adding main phase
 	private void addRunPhase(FileWriter fw){
 		try {
@@ -164,9 +175,9 @@ public class MonitorGen {
 			fw.write("\ttr = new(\"tr\");\n");
 			fw.write("\tcollect_my_pkt(tr);\n");
 			//need to implement collect_my_pkt and drive_my_pkt
-			fw.write("\t"+ portName+ ".write(tr);\n");
+			//fw.write("\t"+ portName+ ".write(tr);\n");
 			fw.write("end\n");
-			fw.write("join");
+			fw.write("join\n");
 			this.addSpace(fw, 1);
 			fw.write("endtask\n");
 			
@@ -183,9 +194,9 @@ public class MonitorGen {
 			fw.write("virtual task collect_my_pkt(" + transactionType + " tr" + ")\n");
 			fw.write("`uvm_info(\"" + name + "\", " + "\"Begin to collect\", " + "UVM_LOW);\n");
 			fw.write("//ADD YOUR OWN COLLECT CODE HERE\n");
-			addSpace(fw, 3);
+			addSpace(fw, 1);
 			fw.write("`uvm_info(\"" + name + "\", " + "\"End to collect\", " + "UVM_LOW)\n");
-			fw.write("endtask");
+			fw.write("endtask\n");
 		} catch (IOException e) {
 			System.out.println("Failed to create drive task");
 		}
@@ -194,9 +205,9 @@ public class MonitorGen {
 	
 	private void addCoverage(FileWriter fw) {
 		try {
-			fw.write("covergroup;");
-			fw.write("\tcovergroup;");
-			fw.write("endgroup;");
+			fw.write("covergroup;\n");
+			fw.write("\tcoverpoint;\n");
+			fw.write("endgroup;\n");
 		} catch (IOException e){
 			System.out.println("Failed to create coverage");
 		}

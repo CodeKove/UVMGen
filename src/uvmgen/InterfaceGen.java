@@ -27,8 +27,8 @@ public class InterfaceGen {
 	
 	private List<String> funcsName = new ArrayList<>();
 	private List<String> funcsType = new ArrayList<>();
-	private List<String> taskName = new ArrayList<>();
 	
+	private List<String> taskName = new ArrayList<>();
 	
 	private List<String> varsName = new ArrayList<>();
 	private List<String> varsType = new ArrayList<>();
@@ -38,7 +38,7 @@ public class InterfaceGen {
 	
 	Scanner scan = new Scanner(System.in);
 	
-	
+	//constructor
 	public InterfaceGen(String name, String fileName) {
 		this.name = name;
 		this.fileName = fileName;
@@ -54,9 +54,8 @@ public class InterfaceGen {
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
 			addSpace(fw, 1);
 			fw.write("interface " + name + "();\n");
-			
-			this.setVars(varsName, varsType);
 			addSpace(fw, 1);
+			this.setVars(varsName, varsType);
 			this.addVars(fw, varsName, varsType);
 			addSpace(fw, 1);
 			this.setFuncs(funcsName, funcsType);
@@ -85,7 +84,7 @@ public class InterfaceGen {
 	private void addVars(FileWriter fw, List<String> varsName, List<String> varsType) {
 		try {
 			for (int i = 0; i < varsName.size(); i++) {
-				fw.write(varsType.get(i) + varsName.get(i));
+				fw.write(varsType.get(i) + " " + varsName.get(i) + ";\n");
 			}
 		} catch (IOException e) {
 			System.out.println("Failed to create variables in interface");
@@ -93,8 +92,10 @@ public class InterfaceGen {
 	}
 	
 	private void setVars(List<String> varsName, List<String> varsType) {
-		System.out.println("Begin to set variables in an Interface (Press Q to quit or S to Start )");
+		System.out.println("Begin to set variables in an Interface");
+		int i = 1;
 		while(true) {
+			System.out.println("Begin to set # " + i++ + " variable (Press Q to quit S to start):");
 			String a = scan.next();
 			if (a.equals("Q") || a.equals("q")){
 				break;
@@ -103,6 +104,7 @@ public class InterfaceGen {
 				varsType.add(scan.next());
 				System.out.println("Please enter the name of next variable:");
 				varsName.add(scan.next());
+				
 			}
 		}
 	}
@@ -111,8 +113,9 @@ public class InterfaceGen {
 		try {
 			for (int i = 0; i < funcsName.size(); i++) {
 				fw.write("function " + funcsType.get(i) + " "+ funcsName.get(i) + "();\n" );
-				
-				fw.write("endfunction");
+				fw.write("\n");
+				fw.write("endfunction\n");
+				fw.write("\n");
 			}
 		} catch (IOException e) {
 			System.out.println("Failed to create Functions in interface");
@@ -120,8 +123,10 @@ public class InterfaceGen {
 	}
 	
 	private void setFuncs(List<String> funcsName, List<String> funcsType) {
-		System.out.println("Begin to set functions in an Interface (Press Q to quit or S to Start )");
+		System.out.println("Begin to set functions in an Interface");
+		int i = 1;
 		while(true) {
+			System.out.println("Begin to set # " + i++ + " function (Press Q to quit S to start):");
 			String a = scan.next();
 			if (a.equals("Q") || a.equals("q")){
 				break;
@@ -130,6 +135,7 @@ public class InterfaceGen {
 				funcsType.add(scan.next());
 				System.out.println("Please enter the name of next function:");
 				funcsName.add(scan.next());
+				
 			}
 		}
 	}
@@ -138,7 +144,9 @@ public class InterfaceGen {
 		try {
 			for (int i = 0; i < taskName.size(); i++) {
 				fw.write("task " + taskName.get(i) + "();\n" );
-				fw.write("endtask");
+				fw.write("\n");
+				fw.write("endtask\n");
+				fw.write("\n");
 			}
 		} catch (IOException e) {
 			System.out.println("Failed to create Tasks in interface");
@@ -146,22 +154,26 @@ public class InterfaceGen {
 	}
 	
 	private void setTasks(List<String> taskName) {
-		System.out.println("Begin to set tasks in an Interface (Press Q to quit or S to Start )");
+		System.out.println("Begin to set tasks in an Interface");
+		int i = 1;
 		while(true) {
+			System.out.println("Begin to set # " + i++ + " task (Press Q to quit S to start):");
 			String a = scan.next();
 			if (a.equals("Q") || a.equals("q")){
 				break;
 			} else {
 				System.out.println("Please enter the name of next task:");
-				funcsName.add(scan.next());
+				taskName.add(scan.next());
+				
 			}
 		}
 	}
 	
 	private void addModPorts(FileWriter fw, List<String> mpName) {
 		try {
-			for (int i = 0; i < taskName.size(); i++) {
+			for (int i = 0; i < mpName.size(); i++) {
 				fw.write("modport " + mpName.get(i) + "();\n" );
+				fw.write("\n");
 			}
 		} catch (IOException e) {
 			System.out.println("Failed to creat ModPorts");
@@ -169,8 +181,10 @@ public class InterfaceGen {
 	}
 	
 	private void setModPorts(List<String> mpName) {
-		System.out.println("Begin to set Modports in an Interface (Press Q to quit or S to Start )");
+		System.out.println("Begin to set Modports in an Interface");
+		int i = 1;
 		while(true) {
+			System.out.println("Begin to set # " + i++ + " modport (Press Q to quit S to start):");
 			String a = scan.next();
 			if (a.equals("Q") || a.equals("q")){
 				break;
@@ -185,7 +199,9 @@ public class InterfaceGen {
 		try {
 			for (int i = 0; i < clkBlkName.size(); i++) {
 				fw.write("clocking " + clkBlkName.get(i) + "@();\n");
-				fw.write("endclocking");
+				fw.write("\n");
+				fw.write("endclocking\n");
+				fw.write("\n");
 			}
 		} catch (IOException e) {
 			
@@ -193,14 +209,16 @@ public class InterfaceGen {
 	}
 	
 	private void setClkBLKs(List<String> clkBlkName) {
-		System.out.println("Begin to set clocking block in an Interface (Press Q to quit or S to Start )");
+		System.out.println("Begin to set clocking block in an Interface");
+		int i = 1;
 		while(true) {
+			System.out.println("Begin to set # " + i++ + " clocking block (Press Q to quit S to start):");
 			String a = scan.next();
 			if (a.equals("Q") || a.equals("q")){
 				break;
 			} else {
 				System.out.println("Please enter the name of next clocking block:");
-				funcsName.add(scan.next());
+				clkBlkName.add(scan.next());
 			}
 		}
 	}

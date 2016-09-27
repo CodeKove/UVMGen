@@ -3,8 +3,11 @@
 class my_monitor extends uvm_monitor;
 `uvm_component_utils(my_monitor)
 	virtual my_if vif ;
-	uvm_analysis_port #(my_trans)ap;
-covergroup;	covergroup;endgroup;
+	uvm_analysis_port #(my_trans) ap;
+covergroup;
+	coverpoint;
+endgroup;
+
 
 function new (string name = "my_monitor" , uvm_component parent = null);
 	super.new(name, parent);
@@ -24,12 +27,13 @@ virtual task run_phase (uvm_phase phase)
 //ADD Your OWN CODE Here
 my_trans tr;
 
-forkwhile(1) begin
+fork
+while(1) begin
 	tr = new("tr");
 	collect_my_pkt(tr);
-	ap.write(tr);
 end
 join
+
 endtask
 
 
@@ -38,10 +42,9 @@ virtual task collect_my_pkt(my_trans tr)
 `uvm_info("my_monitor", "Begin to collect", UVM_LOW);
 //ADD YOUR OWN COLLECT CODE HERE
 
-
-
 `uvm_info("my_monitor", "End to collect", UVM_LOW)
 endtask
+
 
 endclass
 `endif
