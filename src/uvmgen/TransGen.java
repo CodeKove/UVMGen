@@ -67,11 +67,11 @@ public class TransGen {
 			//fw.write();
 			fw.write("`ifndef " + name.toUpperCase() + "__SV\n" );
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
-			this.addSpace(fw, 2);
+			this.addSpace(fw, 1);
 			fw.write("class " + name + " extends uvm_sequence_item;\n");
-			
+			this.addSpace(fw, 1);
 			this.addNewFun(name, fw);
-			
+			this.addSpace(fw, 1);
 			//add random variables
 			System.out.println("How Many rand variables do you want to create?");
 			System.out.println("Please enter the number:");
@@ -85,6 +85,7 @@ public class TransGen {
 					System.out.print("Please enter the data name for it: ");
 					this.randVarsName.add(scan.next());	
 				}
+				System.out.println("Finish rand variable create");
 			} else {
 				System.out.println("Finish rand variable create");
 			}
@@ -107,12 +108,17 @@ public class TransGen {
 					System.out.print("Please enter the data name for it: ");
 					this.nonRandVarsName.add(scan.next());	
 				}
+				System.out.println("Finish non rand variable create");
 			} else {
 				System.out.println("Finish non rand variable create");
 			}
-			
+			addSpace(fw, 1);
 			this.addNonRandVars(nonRandVarsName, nonRandVarsType, fw);
 			
+			//add field automation
+			fw.write("`uvm_object_utils_begin(" + name + ")\n");
+			fw.write("\t//`uvm_field_" + "int(" + "name, " + "UVM_ALL_ON)\n");
+			fw.write("`uvm_object_utils_end\n");
 			
 			
 			//add constrains
@@ -122,9 +128,10 @@ public class TransGen {
 			
 			if (n != 0) {
 				for (int i = 0; i < n; i ++){
-					System.out.print("Please enter the name for No." + (i+1) +  "constraint");
+					System.out.println("Please enter the name for No." + (i+1) +  "constraint:");
 					this.consName.add(scan.next());	
 				}
+				System.out.println("Finish constraints create");
 			} else {
 				System.out.println("Finish constraints create");
 			}
@@ -142,22 +149,20 @@ public class TransGen {
 			
 			if (n != 0) {
 				for (int i = 0; i < n; i ++){
-					System.out.print("Please enter the name for No." + (i+1) +  "function");
+					System.out.println("Please enter the name for No." + (i+1) +  "function:");
 					this.funcsName.add(scan.next());	
 					System.out.println();
 					System.out.print("Please enter the return type for it: ");
 					this.funcsType.add(scan.next());
 				}
+				System.out.println("Finish functions create");
 			} else {
 				System.out.println("Finish functions create");
 			}
 			
 			this.addFuncs(funcsName, funcsType, fw);
 			
-			//add field automation
-			fw.write("`uvm_object_utils_begin(" + name + ")\n");
-			fw.write("\t//`uvm_field_" + "int(" + "name, " + "UVM_ALL_ON)\n");
-			fw.write("`uvm_object_utils_end\n");
+			
 			
 
 		
@@ -181,17 +186,10 @@ public class TransGen {
 	 * This is function is used to create list of Non rand variables according to their type and name 
 	 */
 	
-	private void addNonRandVars(List<String> nonRandVarsName, List<String> nonRandVarsType, FileWriter fw){
-		
-		String[] varNames =  new String[nonRandVarsName.size()];
-		varNames = nonRandVarsName.toArray(varNames);
-		String[] varTypes =  new String[nonRandVarsType.size()];
-		varTypes = nonRandVarsType.toArray(varTypes);
-		
-		for (int i = 0; i <varNames.length; i++) {
+	private void addNonRandVars(List<String> nonRandVarsName, List<String> nonRandVarsType, FileWriter fw){	
+		for (int i = 0; i <nonRandVarsName.size(); i++) {
 			try {
-				fw.write("\t" + varTypes[i] + "\t" +varNames[i] + ";\n" );
-
+				fw.write("\t" + nonRandVarsType.get(i) + "\t" + nonRandVarsName.get(i) + ";\n" );
 			} catch(IOException e) {
 				System.out.println("Failed to create NonRand variable field");
 			}
@@ -207,18 +205,10 @@ public class TransGen {
 	 */
 	
 	private void addRandVars(List<String> randVarsName, List<String> randVarsType, FileWriter fw){
-		//first create a string with size() of the list
-		//second use toArray() to copy the List
-		String[] varNames =  new String[randVarsName.size()];
-		varNames = randVarsName.toArray(varNames);
-		
-		String[] varTypes =  new String[randVarsType.size()];
-		varTypes = randVarsType.toArray(varTypes);
-		
-		
-		for (int i = 0; i < varNames.length; i++) {
+	
+		for (int i = 0; i < randVarsName.size(); i++) {
 			try {
-				fw.write("\trand " + varTypes[i] + "\t" +varNames[i] + ";\n" );
+				fw.write("\trand " + randVarsType.get(i) + "\t" + randVarsName.get(i) + ";\n" );
 
 			} catch(IOException e) {
 				System.out.println("Failed to create Rand variable field");
@@ -234,12 +224,9 @@ public class TransGen {
 	 */
 	private void addCons(List<String> consName , FileWriter fw){
 		
-		String[]cons =  new String[consName.size()];
-		cons = consName.toArray(cons);
-		
-		for (int i = 0; i < cons.length; i++) {
+		for (int i = 0; i < consName.size(); i++) {
 			try {
-				fw.write("constraint" + cons[i] + "{\n" );
+				fw.write("constraint " + consName.get(i) + "{\n" );
 				fw.write("//Add constraints here\n");
 				fw.write("}\n");
 
@@ -256,16 +243,10 @@ public class TransGen {
 	 *  This is function is used to create functions for the transaction
 	 */
 	private void addFuncs(List<String> funcsName, List<String> funcsType, FileWriter fw){
-		String[] functionNames =  new String[funcsName.size()]; 
-		functionNames = funcsName.toArray(functionNames);
-		
-		String[] functionTypes =  new String[funcsType.size()]; 
-		functionTypes = funcsType.toArray(functionTypes);
-		
-		
-		for (int i = 0; i < functionNames.length; i++) {
+	
+		for (int i = 0; i < funcsName.size(); i++) {
 			try {
-				fw.write("function " + functionTypes[i] + " " + functionNames[i] + " ()\n");
+				fw.write("function " + funcsType.get(i) + " " + funcsName.get(i) + " ()\n");
 				fw.write("//ADD CODE HERE FOR FUNCTION\n");
 				fw.write("endfunction\n");
 
@@ -284,35 +265,13 @@ public class TransGen {
 	/*
 	private void addFieldAuto(List<String> nonRandVarsName, List<String> nonRandVarsType, List<String> randVarsName, List<String> randVarsType, FileWriter fw){
 		//record none Rand variables
-		String[] nonRandNameArray =  new String[nonRandVarsName.size()];
-		nonRandNameArray = nonRandVarsName.toArray(nonRandNameArray);
-		String[] nonRandTypeArray =  new String[nonRandVarsType.size()];
-		nonRandTypeArray = nonRandVarsType.toArray(nonRandTypeArray);
-		//record Rand variables
-		String[] randNameArray =  new String[nonRandVarsName.size()];
-		randNameArray = nonRandVarsName.toArray(randNameArray);
-		String[] randTypeArray =  new String[nonRandVarsType.size()];
-		randTypeArray = nonRandVarsType.toArray(randTypeArray);
-		
-		//create field macros accoring to its type
-		for (int i = 0; i < nonRandNameArray.length; i++) {
-			switch (nonRandNameArray[i]) {
-				
-			}
-		}
-		try {
-			fw.write("\t//`uvm_field_" + "int(" + "name, " + "UVM_ALL_ON)\n");
-		} catch (IOException e) {
-			System.out.println("Field Automation failed");
-		}
-		
 	}
 	*/	
 	
 	//adding new function in the code
 	private void addNewFun(String name, FileWriter fw){
 		try {
-			fw.write("function new (string name = \" " + name + "\""+ ");\n");
+			fw.write("function new (string name = \"" + name + "\""+ ");\n");
 			fw.write("\tsuper.new();\n");
 			fw.write("endfunction\n");
 				

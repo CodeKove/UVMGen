@@ -42,6 +42,8 @@ public class UVMGen {
 		 * It needs its file name and name
 		 * ****************************************
 		 */
+		
+		
 		/*
 		int n = 3;
 		for (int i = 0; i < n; i++){
@@ -63,7 +65,9 @@ public class UVMGen {
 			
 		}*/
 		//scan.close();
-		
+		////////////////////////////////////////////////////////////////////
+		//The comment below is for driver generate, it will record driver name and file name
+		/*
 		while(true){
 				System.out.println("Be ready to create next driver (Q to quit Y to contine):");
 			
@@ -86,12 +90,38 @@ public class UVMGen {
 				System.out.println("Your driver named " + name + " is generated in " + fileName +".sv");
 			}
 		}
-				
-		System.out.println("done");
-
+		*/
 		
+		//System.out.println("done");
+		/*
+		MonitorGen Monitor = new MonitorGen("my_monitor", "monitor");
+		Monitor.writeMonitor();
+		System.out.println("Your Monitor is generated");
+		*/
+		/*
+		ModelGen Model = new ModelGen("my_model", "model");
+		Model.writeScb();
+		System.out.println("Your Model is generated");
+		*/
 		
-		
+		ScbGen Scb = new ScbGen("my_scb", "scb");
+		Scb.writeScb();
+		System.out.println("Your ScoreBoard is generated");
+		/*
+		TransGen Trans = new TransGen("my_trans", "Trans");
+		Trans.writeTrans();
+		System.out.println("Your transaction is generated");
+		*/
+		/*
+		EnvGen env = new EnvGen("my_env", "env");
+		env.writeEnv();
+		System.out.println("Your env is generated");
+		*/
+		/*
+		AgentGen agt = new AgentGen("my_agent", "agent");
+		agt.writeAgent();
+		System.out.println("Your agent is generated");
+		*/
 		/*
 		System.out.print("Please enter the FileName:");
 		String fileName = new String();
@@ -111,14 +141,9 @@ public class UVMGen {
 		Sequencer.writeSequencer();
 		System.out.println("Your sequencer is generated");
 		
-		MonitorGen Monitor = new MonitorGen("my_monitor", "monitor");
-		Monitor.writeMonitor();
-		System.out.println("Your Monitor is generated");
 		
 		
-		//TransGen Trans = new TransGen("trans", "Trans");
-		//Trans.writeTrans();
-		//System.out.println("Your transaction is generated");
+		
 		
 		
 		SqGen sq = new SqGen("case0_sequence", "case0");

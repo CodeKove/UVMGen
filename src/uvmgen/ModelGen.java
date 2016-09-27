@@ -18,7 +18,7 @@ public class ModelGen {
 		this.fileName = fileName;
 	}
 	
-	public void writeScb(){
+	public void writeModel(){
 		setPort();
 		try {
 			File f= new File(fileName + ".sv");
@@ -27,13 +27,14 @@ public class ModelGen {
 			fw.write("`ifndef " + name.toUpperCase() + "__SV\n" );
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
 			fw.write("class " + name + " extends uvm_scoreboard;\n");
-			fw.write("`uvm_component_utils(" + name + ")\n");
+			fw.write("\t`uvm_component_utils(" + name + ")\n");
 			
 			 for (int i = 0; i < portTypeList.size(); i++) {
-				 fw.write(portTypeList.get(i) + " #(" + portTransTypeList.get(i) + ") " + portNameList.get(i) + ";\n");
+				 fw.write("\t" + portTypeList.get(i) + " #(" + portTransTypeList.get(i) + ") " + portNameList.get(i) + ";\n");
 			 }
 			 
-			 addNewFunc(name, "null", fw);
+			 addSpace(fw, 1);
+			 addNewFunc(fw);
 			 addSpace(fw, 1);
 			 addBuildPhase(fw);
 			 addSpace(fw, 1);
@@ -55,28 +56,24 @@ public class ModelGen {
 		//second port transaction type
 		//finally port name
 		 while (true) {
-	        	System.out.println("Please enter next port type (Q to quit):");
-	        	String portType = scan.next();
-	        	System.out.println("Please enter next port transaction type:");
-	        	String portTransType = scan.next();
-	        	System.out.println("Please enter next String:");
-	        	String portName = scan.next();
-	        	
-	        	if (portType.equals("Q") || portType.equals("q")){
+			 
+			 	System.out.println("Please set the next port for Reference Models " + this.name + "(Press Q to quit S to Start):");
+			 	String a = scan.next();
+	        	if (a.equals("Q") || a.equals("q")){
 	        		break;
 	        	} else {
-	        		portTypeList.add(portType);
-	        		portNameList.add(portName);
-	        		portTransTypeList.add(portTransType);
+	        		System.out.println("Please enter next port type (Q to quit):");
+	        		portTypeList.add(scan.next());
+		        	System.out.println("Please enter next port transaction type:");
+		        	portTransTypeList.add(scan.next());		        	
+		        	System.out.println("Please enter next port name:");
+		        	portNameList.add(scan.next());
 	        		continue;
 	        	}
 	        }
-		// for (int i = 0; i < portTypeList.size(); i++) {
-			 //System.out.println(portTypeList.get(i) + " #(" + portTransTypeList.get(i) + ") " + portNameList.get(i) + ";\n");
-		 //}
 	}
 	
-	private void addNewFunc(String name, String parent, FileWriter fw){
+	private void addNewFunc(FileWriter fw){
 		try {
 			fw.write("function new (string name , uvm_component parent);\n");
 			fw.write("\tsuper.new(name, parent);\n");
@@ -91,9 +88,10 @@ public class ModelGen {
 		try{
 			fw.write("virtual function void build_phase(uvm_phase phase);\n");
 			fw.write("\tsuper.build_phase(phase);\n");
-			for (int i = 0; i < portNameList.size(); i++)
-			fw.write(portNameList.get(i) + "= new(\"" + portNameList.get(i) + "\", this);\n");
-			fw.write("endfunction");
+			for (int i = 0; i < portNameList.size(); i++){
+				fw.write("\t" + portNameList.get(i) + "= new(\"" + portNameList.get(i) + "\", this);\n");
+			}
+			fw.write("endfunction\n");
 		} catch(IOException e) {
 			e.getStackTrace();
 			System.out.print("Failed to create build phase");
@@ -102,12 +100,12 @@ public class ModelGen {
 	
 	private void addRunPhase(FileWriter fw){
 		try{
-			fw.write("virtual task void run_phase(uvm_phase phase);\n");
+			fw.write("virtual task run_phase(uvm_phase phase);\n");
 			fw.write("\tsuper.run_phase(phase);\n");
-			fw.write("\tfork");
-			fw.write("//ADD Your code here");
-			fw.write("\tjoin");
-			fw.write("endtask");
+			fw.write("\tfork\n");
+			fw.write("//ADD Your code here\n");
+			fw.write("\tjoin\n");
+			fw.write("endtask\n");
 		} catch(IOException e) {
 			
 		}

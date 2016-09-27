@@ -33,13 +33,14 @@ public class TestGen {
 			FileWriter fw = new FileWriter(f);
 			fw.write("`ifndef " + name.toUpperCase() + "__SV\n" );
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
-			fw.write("`uvm_component_utils(" + name + ")\n");
+			fw.write("\t`uvm_component_utils(" + name + ")\n");
+			addSpace(fw, 1);
 			addNewFunc(name, "null" ,fw);
+			addSpace(fw, 1);
 			addBuildPhase(fw);
 			fw.write("\n`endif\n");
 			fw.close();
 		} catch (IOException e) {
-			
 			e.printStackTrace();
 			System.out.println("Failed to create ");
 		}
@@ -55,7 +56,8 @@ public class TestGen {
 			sqrPath = scan.next();
 			System.out.println("Please enter the sequnce name to run on the sequencer:");
 			sqName = scan.next();
-			fw.write(" uvm_config_db#(uvm_object_wrapper)::set(this, " + "\n\"" + sqrPath + "\", " + "\n\"default_sequence\", " + "\n" + sqName + "::type_id::get());");
+			fw.write(" uvm_config_db#(uvm_object_wrapper)::set(this, " + "\n\"" + sqrPath + 
+					"\", " + "\n\"default_sequence\", " + "\n" + sqName + "::type_id::get());");
 			fw.write("endfunction\n");
 		} catch (IOException e){
 			e.printStackTrace();
@@ -74,6 +76,18 @@ public class TestGen {
 			}
 			
 		}
+		
+		//adding lines of space in the code
+		private void addSpace(FileWriter fw, int space) {
+			try{
+				for(int i = 0; i < space; i ++) {
+					fw.write("\n");
+				}
+			} catch (IOException e) {
+				System.out.println("Add space failed");
+			}	
+		}
+		
 	
 	
 }

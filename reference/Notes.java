@@ -26,7 +26,7 @@ while (true){
 	String a = scan.next();
 	if (a.equals("")){
 		break;
-	} eles {
+	} else {
 		//do something
 	}
 }

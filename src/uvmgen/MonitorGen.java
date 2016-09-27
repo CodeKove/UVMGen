@@ -24,6 +24,11 @@ public class MonitorGen {
 	
 	private String transactionType;
 	private String portName;
+	private String portType;
+	
+	private List<String> portNameList = new ArrayList<String>();
+	private List<String> portTypeList = new ArrayList<String>();
+	
 	
 	private String interfaceType, interfaceName;
 	
@@ -53,8 +58,14 @@ public class MonitorGen {
 			this.interfaceType = scan.next();
 			System.out.println("Please enter the interface name for monitor: ");
 			this.interfaceName = scan.next();
+			//for ports
 			System.out.println("Please enter the port name for monitor: ");
 			this.portName = scan.next();
+			this.portNameList.add(portName);
+			
+			System.out.println("Please enter the port name for monitor: ");
+			this.portType = scan.next();
+			this.portTypeList.add(portName);
 			
 			
 			fw.write("`ifndef " + name.toUpperCase() + "__SV\n" );
@@ -65,7 +76,7 @@ public class MonitorGen {
 			
 			this.addInterface(interfaceType, interfaceName, fw);
 			
-			this.addAnalysisPort(interfaceType, interfaceName, fw);
+			this.addPort(interfaceType, interfaceName, fw);
 			this.addCoverage(fw);
 			addSpace(fw, 2);
 			this.addNewFunc(name, "null", fw);
@@ -111,9 +122,9 @@ public class MonitorGen {
 			System.out.println("Failed to create interface");
 		}
 	}
-	
+	//write ports
 	//adding analysis port
-	private void addAnalysisPort(String interfaceType, String interfaceName, FileWriter fw) {
+	private void addPort(String interfaceType, String interfaceName, FileWriter fw) {
 		try {
 			fw.write("\tuvm_analysis_port #(" + this.transactionType + ")" + portName + ";\n" );
 		} catch (IOException e) {
@@ -148,7 +159,7 @@ public class MonitorGen {
 			fw.write("//ADD Your OWN CODE Here\n");
 			fw.write(this.transactionType + " tr;\n");
 			addSpace(fw, 1);
-			fw.write("fork");
+			fw.write("fork\n");
 			fw.write("while(1) begin\n");
 			fw.write("\ttr = new(\"tr\");\n");
 			fw.write("\tcollect_my_pkt(tr);\n");

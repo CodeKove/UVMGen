@@ -15,6 +15,7 @@ public class SqGen {
 	private String name, fileName;
 	private String transName, transType;
 	
+	Scanner scan = new Scanner(System.in);
 	public SqGen(String name, String fileName) {
 		this.name = name;
 		this.fileName = fileName;
@@ -22,7 +23,6 @@ public class SqGen {
 	
 	//String transType, String transName
 	private void setTrans() {
-		Scanner scan = new Scanner(System.in);
 		System.out.print("Please enter the transaction type for the sequence:");
 		this.transType = scan.next();
 		System.out.print("Please enter the transaction name for the sequence:");
@@ -76,6 +76,16 @@ public class SqGen {
 		}
 	}
 	
+	private void addBody2(String transName, FileWriter fw){
+		try {
+			fw.write("start_item(req);");
+			fw.write("req.randomize() with { };");
+			fw.write("finish_item(req);");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Failed to add body task");
+		}
+	}
 	//adding new function in the code
 	private void addNewFunc(String name, FileWriter fw){
 		try {

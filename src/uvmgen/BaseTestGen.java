@@ -102,8 +102,16 @@ public class BaseTestGen {
 		try{
 			fw.write("virtual function void report_phase (uvm_phase phase);\n");
 			fw.write("uvm_report_server server;");
+			fw.write("int err_num;");
 			fw.write("\tsuper.report_phase(phase)\n");
-			fw.write( "server = get_report_server();");
+			fw.write( "\tserver = get_report_server();\n");
+			fw.write("\terr_num = server.get_severity_count(UVM_ERROR);\n");
+			fw.write("\tif (err_num != 0) begin\n");
+			fw.write("\t\t$display(\"TEST CASE FAILED\");\n");
+			fw.write("\tend\n");
+			fw.write("\telse begin\n");
+			fw.write("\t\t $display(\"TEST CASE PASSED\");\n");
+			fw.write("\tend\n");
 			fw.write("//More code from you !!!");
 			fw.write("endfunction\n");
 		} catch (IOException e){

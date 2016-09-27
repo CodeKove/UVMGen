@@ -23,11 +23,14 @@ import java.util.*;
 public class AgentGen {
 	
 	private String name, fileName;
+	
 	private String drvType, drvName;
 	private String monType, monName;
 	private String sqrType, sqrName;
 	private String transactionType;
-	private String portType, portName;
+	
+	private String[] portType;
+	private String[] portName;
 	
 	Scanner scan = new Scanner(System.in);
 	
@@ -56,10 +59,18 @@ public class AgentGen {
 			System.out.println("Please enter the Transaction Type:");
 			transactionType = scan.next();
 			
-			System.out.println("Please enter the Port Type:");
-			portType = scan.next();
-			System.out.println("Please enter the Port Name:");
-			portName = scan.next();
+			System.out.println("Please enter the port number of this Agent");
+			int n = scan.nextInt();
+			portType = new String[n];
+			portName = new String[n];
+			
+			for (int i = 0; i < n; i++) {
+				System.out.println("Please enter the Port Type:");
+				portType[i] = scan.next();
+				System.out.println("Please enter the Port Name:");
+				portName[i] = scan.next();
+			}
+			
 			
 			
 			File f= new File(fileName + ".sv");
@@ -68,25 +79,30 @@ public class AgentGen {
 			//fw.write();
 			fw.write("`ifndef " + name.toUpperCase() + "__SV\n" );
 			fw.write("`define " + name.toUpperCase() + "__SV\n" );
-			
-			fw.write("class " + name + " extends uvm_agent#;\n");
-			fw.write("`uvm_component_utils(" + name + ")\n");
+			addSpace(fw, 1);
+			fw.write("class " + name + " extends uvm_agent;\n");
+			fw.write("\t`uvm_component_utils(" + name + ")\n");
 			
 			addSpace(fw, 1);
 			
 			//declare components
-			fw.write(drvType + drvName + ";\n");
-			fw.write(monType + monName + ";\n");
-			fw.write(sqrType + sqrName + ";\n");
+			fw.write("\t" + drvType + " " + drvName + ";\n");
+			fw.write("\t" + monType + " " + monName + ";\n");
+			fw.write("\t" + sqrType + " " + sqrName + ";\n");
 			
 			//declare ports
-			fw.write(portType + "#(" + transactionType + ") " + portName + ";\n");
+			for(int i = 0; i < n; i++) {
+				fw.write("\t" + portType[i] + " #(" + transactionType + ") " + portName[i] + ";\n");
+			}
 			
+			addSpace(fw, 1);
 			//new function
 			addNewFunc(fw);
 			//build
+			addSpace(fw, 1);
 			this.addBuildPhase(fw);
 			//connect
+			addSpace(fw, 1);
 			this.addConnectPhase(fw);
 	
 			fw.write("\nendclass");
@@ -109,11 +125,11 @@ public class AgentGen {
 			fw.write("\tsuper.build_phase(phase)\n");
 			fw.write("\tif (is_active == UVM_ACTIVE) begin\n");
 			//add active code
-			fw.write("\t" + this.drvName + " = " + this.drvType + "::type_id::create(\"" + this.drvName + "\", this);\n");
-			fw.write("\t" + this.sqrName + " = " + this.sqrType + "::type_id::create(\"" + this.sqrName + "\", this);\n");
+			fw.write("\t\t" + this.drvName + " = " + this.drvType + "::type_id::create(\"" + this.drvName + "\", this);\n");
+			fw.write("\t\t" + this.sqrName + " = " + this.sqrType + "::type_id::create(\"" + this.sqrName + "\", this);\n");
 			fw.write("\tend\n");
 			//add passive code
-			fw.write(this.monName + " = " + this.monType + "::type_id::create(\"" + this.monName + "\", this);\n");
+			fw.write("\t" + this.monName + " = " + this.monType + "::type_id::create(\"" + this.monName + "\", this);\n");
 			
 			
 			fw.write("endfunction\n");
@@ -130,11 +146,16 @@ public class AgentGen {
 			
 			fw.write("\tif (is_active == UVM_ACTIVE) begin\n");
 			//add active code
-			fw.write(drvName + ".seq_item_port.connect(" + sqrName + ".seq_item_export);\n");
+			fw.write("\t" + drvName + ".seq_item_port.connect(" + sqrName + ".seq_item_export);\n");
 			fw.write("\tend\n");
 			//add passive code
 			//need to build links
-			fw.write(portName + " = " + monName + "." + portName);
+			for (int i = 0; i < portName.length; i++) {
+				System.out.println("Please enter the monitor port name:");
+				String port = scan.next();
+				fw.write("\t" + portName[i] + " = " + monName + "." + port + "\n");
+			}
+			//fw.write(portName + " = " + monName + "." + portName);
 			fw.write("endfunction\n");
 		} catch (IOException e){
 			e.printStackTrace();
